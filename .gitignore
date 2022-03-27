@@ -1,0 +1,12 @@
+*.sln
+*.pyc
+
+.vs/
+Binaries/
+Intermediate/
+Saved/
+DataSet/
+Build/
+
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
