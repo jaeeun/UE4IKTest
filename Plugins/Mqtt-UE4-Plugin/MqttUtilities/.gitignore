@@ -1,0 +1,7 @@
+*.sln
+*.pyc
+
+.vs/
+Binaries/
+Intermediate/
+Saved/
