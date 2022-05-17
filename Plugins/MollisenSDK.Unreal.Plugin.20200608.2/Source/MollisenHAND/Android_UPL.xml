@@ -1,0 +1,47 @@
+<!--?xml version="1.0" encoding="utf-8"?-->
+<!--GearVR plugin additions-->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- init section is always evaluated once per architecture -->
+  <init>
+    <log text="Mollisen SDK Unreal Android Plugin Init">
+    </log>
+    <setBool result="bSupported" value="false"/>
+    <isArch arch="armeabi-v7a">
+      <setBool result="bSupported" value="true"/>
+    </isArch>
+  </init>
+  <resourceCopies>
+    <copyDir src="$S(PluginDir)/../../ThirdParty/MollisenAPI/bin/android" dst="$S(BuildDir)/libs" />
+    <isArch arch="armeabi-v7a">
+      <copyFile src="$S(PluginDir)/../../ThirdParty/MollisenAPI//lib/android/libFtsameAPI.so"
+                dst="$S(BuildDir)/libs/armeabi-v7a/libFtsameAPI.so" />
+    </isArch>
+  </resourceCopies>
+  
+  <androidManifestUpdates>
+    <addPermission android:name="android.permission.BLUETOOTH"/>
+    <addPermission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <addPermission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  </androidManifestUpdates>
+
+  <buildGradleAdditions>
+    <insert>
+      dependencies {
+        implementation name: 'ftsame.api', ext: 'aar'
+      }
+      repositories {
+        flatDir {
+          dirs 'src/main/libs'
+        }
+      }
+    </insert>
+  </buildGradleAdditions>
+  
+  <soLoadLibrary>
+    <if condition="bSupported">
+      <true>
+        <loadLibrary name="FtsameAPI" failmsg="Failed to load FtsameAPI library" />
+      </true>
+    </if>
+  </soLoadLibrary>
+</root>

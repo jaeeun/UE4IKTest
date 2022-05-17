@@ -60,11 +60,13 @@ FString UFlexbuffersFunctionLibrary::FStringFromFlexbufferData(TArray<uint8> dat
 FVector StringToFingerVector(FString arr) {
     TArray<FString> array = {};
     arr.ParseIntoArray(array, TEXT(","));
-    float x = FCString::Atof(*array[0].TrimQuotes());
-    float y = FCString::Atof(*array[1].TrimQuotes());
-    float z = FCString::Atof(*array[2].TrimQuotes());
-
-    return FVector(x, y, z);
+	if (array.Num() >= 3) {
+		float x = FCString::Atof(*array[0].TrimQuotes());
+		float y = FCString::Atof(*array[1].TrimQuotes());
+		float z = FCString::Atof(*array[2].TrimQuotes());
+		return FVector(x, y, z);
+	}
+	return FVector(0,0,0);
 }
 
 FFingerPose UFlexbuffersFunctionLibrary::FingersFromFexbufferData(TArray<uint8> data) {
@@ -91,7 +93,10 @@ FFingerPose UFlexbuffersFunctionLibrary::FingersFromFexbufferData(TArray<uint8> 
 
     finger = FString(UTF8_TO_TCHAR(map["fin4"].AsString().c_str()));
     ret.Pinky.Add(StringToFingerVector(finger));
-
+	
+	ret.param1 = FString(UTF8_TO_TCHAR(map["param1"].AsString().c_str()));
+	ret.param2 = FString(UTF8_TO_TCHAR(map["param2"].AsString().c_str()));
+	ret.param3 = FString(UTF8_TO_TCHAR(map["param3"].AsString().c_str()));
 
     return ret;
 }

@@ -36,6 +36,12 @@ public:
   TArray<FVector> Ring;
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
   TArray<FVector> Pinky;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+  FString param1;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+  FString param2;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+  FString param3;
 };
 
 /**
