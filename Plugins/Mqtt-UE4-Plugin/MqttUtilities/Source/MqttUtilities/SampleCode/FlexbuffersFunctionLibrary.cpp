@@ -57,46 +57,87 @@ FString UFlexbuffersFunctionLibrary::FStringFromFlexbufferData(TArray<uint8> dat
   return ret;
 }
 
-FVector StringToFingerVector(FString arr) {
+FInputInfo UFlexbuffersFunctionLibrary::InputInfoFromFexbufferData(TArray<uint8> data) {
+	std::vector<uint8_t> buf(data.Num());
+	memcpy(&buf[0], data.GetData(), data.Num());
+	auto map = flexbuffers::GetRoot(buf).AsMap();
+
+	FInputInfo ret;
+	ret.type = FString(UTF8_TO_TCHAR(map["type"].AsString().c_str()));
+	FString screensize = FString(UTF8_TO_TCHAR(map["screensize"].AsString().c_str()));
+
+	TArray<FString> array = {};
+	screensize.ParseIntoArray(array, TEXT(","));
+	if (array.Num() >= 2) {
+		ret.screensize.X = FCString::Atof(*array[0].TrimQuotes());
+		ret.screensize.Y = FCString::Atof(*array[1].TrimQuotes());
+	}
+	else {
+		ret.screensize = FVector2D(0, 0);
+	}
+
+	return ret;
+}
+
+FVector StringToFingerVector(FString arr,int index) {
     TArray<FString> array = {};
     arr.ParseIntoArray(array, TEXT(","));
 	if (array.Num() >= 3) {
-		float x = FCString::Atof(*array[0].TrimQuotes());
-		float y = FCString::Atof(*array[1].TrimQuotes());
-		float z = FCString::Atof(*array[2].TrimQuotes());
+		float x = FCString::Atof(*array[index * 3 + 0].TrimQuotes());
+		float y = FCString::Atof(*array[index * 3 + 1].TrimQuotes());
+		float z = FCString::Atof(*array[index * 3 + 2].TrimQuotes());
 		return FVector(x, y, z);
 	}
 	return FVector(0,0,0);
 }
 
 FFingerPose UFlexbuffersFunctionLibrary::FingersFromFexbufferData(TArray<uint8> data) {
-    FFingerPose ret;
-
+    
     std::vector<uint8_t> buf(data.Num());
     memcpy(&buf[0], data.GetData(), data.Num());
-
     auto map = flexbuffers::GetRoot(buf).AsMap();
 
+	FFingerPose ret;
     ret.hand = FString(UTF8_TO_TCHAR(map["hand"].AsString().c_str()));
 
-    FString finger = FString(UTF8_TO_TCHAR(map["fin0"].AsString().c_str()));
-    ret.Thumb.Add(StringToFingerVector(finger));
-
-    finger = FString(UTF8_TO_TCHAR(map["fin1"].AsString().c_str()));
-    ret.Index.Add(StringToFingerVector(finger));
-
-    finger = FString(UTF8_TO_TCHAR(map["fin2"].AsString().c_str()));
-    ret.Middle.Add(StringToFingerVector(finger));
-
-    finger = FString(UTF8_TO_TCHAR(map["fin3"].AsString().c_str()));
-    ret.Ring.Add(StringToFingerVector(finger));
-
-    finger = FString(UTF8_TO_TCHAR(map["fin4"].AsString().c_str()));
-    ret.Pinky.Add(StringToFingerVector(finger));
-	
-	ret.param1 = FString(UTF8_TO_TCHAR(map["param1"].AsString().c_str()));
-	ret.param2 = FString(UTF8_TO_TCHAR(map["param2"].AsString().c_str()));
-	ret.param3 = FString(UTF8_TO_TCHAR(map["param3"].AsString().c_str()));
+    FString position = FString(UTF8_TO_TCHAR(map["landmark"].AsString().c_str()));
+    ret.Palm = StringToFingerVector(position, 0);
+	ret.Thumb.Add(StringToFingerVector(position, 1));
+	ret.Thumb.Add(StringToFingerVector(position, 2));
+	ret.Thumb.Add(StringToFingerVector(position, 3));
+	ret.Thumb.Add(StringToFingerVector(position, 4));
+    ret.Index.Add(StringToFingerVector(position, 5));
+	ret.Index.Add(StringToFingerVector(position, 6));
+	ret.Index.Add(StringToFingerVector(position, 7));
+	ret.Index.Add(StringToFingerVector(position, 8));
+	ret.Middle.Add(StringToFingerVector(position, 9));
+	ret.Middle.Add(StringToFingerVector(position, 10));
+	ret.Middle.Add(StringToFingerVector(position, 11));
+	ret.Middle.Add(StringToFingerVector(position, 12));
+	ret.Ring.Add(StringToFingerVector(position, 13));
+	ret.Ring.Add(StringToFingerVector(position, 14));
+	ret.Ring.Add(StringToFingerVector(position, 15));
+	ret.Ring.Add(StringToFingerVector(position, 16));
+	ret.Pinky.Add(StringToFingerVector(position, 17));
+	ret.Pinky.Add(StringToFingerVector(position, 18));
+	ret.Pinky.Add(StringToFingerVector(position, 19));
+	ret.Pinky.Add(StringToFingerVector(position, 20));
 
     return ret;
 }
+
+FFingerGesture UFlexbuffersFunctionLibrary::GestureFromFexbufferData(TArray<uint8> data) {
+	
+	std::vector<uint8_t> buf(data.Num());
+	memcpy(&buf[0], data.GetData(), data.Num());
+	auto map = flexbuffers::GetRoot(buf).AsMap();
+
+	FFingerGesture ret;
+	ret.gesture = FString(UTF8_TO_TCHAR(map["gesture"].AsString().c_str()));
+	ret.param.Add(FString(UTF8_TO_TCHAR(map["param1"].AsString().c_str())));
+	ret.param.Add(FString(UTF8_TO_TCHAR(map["param2"].AsString().c_str())));
+	ret.param.Add(FString(UTF8_TO_TCHAR(map["param3"].AsString().c_str())));
+
+	return ret;
+}
+

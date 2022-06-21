@@ -21,11 +21,23 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FInputInfo {
+	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+		FString type;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+		FVector2D screensize;
+};
+
+USTRUCT(BlueprintType)
 struct FFingerPose {
   GENERATED_BODY()
 public:
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
   FString hand;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+  FVector Palm;
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
   TArray<FVector> Thumb;
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
@@ -36,12 +48,16 @@ public:
   TArray<FVector> Ring;
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
   TArray<FVector> Pinky;
-  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
-  FString param1;
-  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
-  FString param2;
-  UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
-  FString param3;
+};
+
+USTRUCT(BlueprintType)
+struct FFingerGesture {
+	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+		FString gesture;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MQTT")
+		TArray<FString> param;
 };
 
 /**
@@ -68,4 +84,11 @@ class MQTTUTILITIES_API UFlexbuffersFunctionLibrary
 
   UFUNCTION(BlueprintCallable, Category = "MQTT")
   static FFingerPose FingersFromFexbufferData(TArray<uint8> data);
+
+  UFUNCTION(BlueprintCallable, Category = "MQTT")
+  static FFingerGesture GestureFromFexbufferData(TArray<uint8> data);
+
+  UFUNCTION(BlueprintCallable, Category = "MQTT")
+  static FInputInfo InputInfoFromFexbufferData(TArray<uint8> data);
+
 };

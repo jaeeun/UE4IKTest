@@ -12,5 +12,27 @@
 				"Engine"
 			]
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "Shotgun",
+			"Enabled": true,
+			"SupportedTargetPlatforms": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "LiveLinkXR",
+			"Enabled": true
+		},
+		{
+			"Name": "MqttUtilities",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/6371e7a3824549bba2411d0f1baa7ae0"
+		},
+		{
+			"Name": "PixelStreaming",
+			"Enabled": true
+		}
 	]
 }
